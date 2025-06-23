@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,77 +6,79 @@
   <title>Happy Birthday Game</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
   <style>
-body {
-  margin: 0;
-  font-family: 'Fredoka', sans-serif;
-  background-color: #ffe6f0;
-  overflow: hidden;
-}
-#start-screen {
-  text-align: center;
-  padding-top: 100px;
-}
-#start-screen input, button {
-  padding: 10px 20px;
-  font-size: 20px;
-  border-radius: 20px;
-  border: none;
-  margin-top: 10px;
-}
-#game-screen {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background: url('clouds.png') repeat-x;
-  background-size: contain;
-}
-#ground {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  background: #ffb6c1;
-  z-index: 0;
-}
-#kitty {
-  width: 100px;
-  height: 100px;
-  background-image: url('hello_kitty1.png');
-  background-size: cover;
-  position: absolute;
-  left: 100px;
-  bottom: 60px;
-  z-index: 1;
-}
-.cake {
-  width: 60px;
-  height: 60px;
-  background-image: url('cake.png');
-  background-size: cover;
-  position: absolute;
-}
-#popup {
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -30%);
-  background: white;
-  border-radius: 15px;
-  padding: 40px;
-  text-align: center;
-  font-size: 32px;
-  z-index: 999;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-.hidden {
-  display: none;
-}
+    body {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      background-color: #ffe6f0;
+      overflow: hidden;
+    }
+    #start-screen {
+      text-align: center;
+      padding-top: 100px;
+    }
+    #start-screen input,
+    #start-screen button {
+      padding: 10px 20px;
+      font-size: 20px;
+      border-radius: 20px;
+      border: none;
+      margin-top: 10px;
+    }
+    #game-screen {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: url('clouds.png') repeat-x;
+      background-size: contain;
+    }
+    #ground {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      background: #ffb6c1;
+      z-index: 0;
+    }
+    #kitty {
+      width: 100px;
+      height: 100px;
+      background-image: url('hello_kitty1.png');
+      background-size: cover;
+      position: absolute;
+      left: 100px;
+      bottom: 60px;
+      z-index: 1;
+    }
+    .cake {
+      width: 60px;
+      height: 60px;
+      background-image: url('cake.png');
+      background-size: cover;
+      position: absolute;
+    }
+    #popup {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      text-align: center;
+      font-size: 32px;
+      z-index: 999;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div id="start-screen">
     <h1>Hello Kitty Birthday Game 🎂</h1>
     <input type="text" id="nameInput" placeholder="Enter your friend's name" />
+    <br>
     <button onclick="startGame()">Start Game</button>
   </div>
 
@@ -92,98 +93,99 @@ body {
   </div>
 
   <script>
-let name = '';
-let cakesEaten = 0;
-let totalCakes = 15;
-let kitty = null;
-let kittyX = 100;
+    let name = '';
+    let cakesEaten = 0;
+    const totalCakes = 15;
+    let kitty = null;
+    let kittyX = 100;
 
-const eatSound = new Audio('eat.mp3');
-const walkSound = new Audio('walk.mp3');
-const popupSound = new Audio('popup.mp3');
+    const eatSound = new Audio('eat.mp3');
+    const walkSound = new Audio('walk.mp3');
+    const popupSound = new Audio('popup.mp3');
 
-function startGame() {
-  name = document.getElementById('nameInput').value || 'Friend';
-  document.getElementById('start-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
+    function startGame() {
+      name = document.getElementById('nameInput').value || 'Friend';
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
 
-  kitty = document.getElementById('kitty');
-  placeCakes();
-  animateKitty();
-  setupKeyboard();
-}
-
-function placeCakes() {
-  const cakesContainer = document.getElementById('cakes');
-  for (let i = 0; i < totalCakes; i++) {
-    const cake = document.createElement('div');
-    cake.classList.add('cake');
-    cake.style.left = Math.random() * (window.innerWidth - 60) + 'px';
-    cake.style.bottom = '60px';
-    cake.addEventListener('click', () => eatCake(cake));
-    cakesContainer.appendChild(cake);
-  }
-}
-
-function eatCake(cake) {
-  cake.remove();
-  eatSound.play();
-  cakesEaten++;
-  if (cakesEaten === totalCakes) {
-    setTimeout(showPopup, 500);
-  }
-}
-
-function showPopup() {
-  popupSound.play();
-  document.getElementById('popup-message').innerText = `🎉 Happy Birthday ${name}! 🎂`;
-  document.getElementById('popup').classList.remove('hidden');
-  showConfetti();
-}
-
-function animateKitty() {
-  let frame = 0;
-  setInterval(() => {
-    frame = (frame + 1) % 2;
-    kitty.style.backgroundImage = `url('hello_kitty${frame + 1}.png')`;
-  }, 300);
-}
-
-function setupKeyboard() {
-  document.addEventListener('keydown', (e) => {
-    const step = 10;
-    if (e.key === 'ArrowLeft') {
-      kittyX -= step;
-      walkSound.play();
-    } else if (e.key === 'ArrowRight') {
-      kittyX += step;
-      walkSound.play();
+      kitty = document.getElementById('kitty');
+      placeCakes();
+      animateKitty();
+      setupKeyboard();
     }
-    kitty.style.left = kittyX + 'px';
-  });
-}
 
-function showConfetti() {
-  for (let i = 0; i < 100; i++) {
-    const confetti = document.createElement('div');
-    confetti.textContent = '🎊';
-    confetti.style.position = 'fixed';
-    confetti.style.left = Math.random() * 100 + 'vw';
-    confetti.style.top = '-10px';
-    confetti.style.fontSize = '30px';
-    confetti.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`;
-    document.body.appendChild(confetti);
-  }
-  const style = document.createElement('style');
-  style.innerHTML = \`
-  @keyframes fall {
-    to {
-      transform: translateY(120vh);
-      opacity: 0;
+    function placeCakes() {
+      const cakesContainer = document.getElementById('cakes');
+      for (let i = 0; i < totalCakes; i++) {
+        const cake = document.createElement('div');
+        cake.classList.add('cake');
+        cake.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+        cake.style.bottom = '60px';
+        cake.addEventListener('click', () => eatCake(cake));
+        cakesContainer.appendChild(cake);
+      }
     }
-  }\`;
-  document.head.appendChild(style);
-}
+
+    function eatCake(cake) {
+      cake.remove();
+      eatSound.play();
+      cakesEaten++;
+      if (cakesEaten === totalCakes) {
+        setTimeout(showPopup, 500);
+      }
+    }
+
+    function showPopup() {
+      popupSound.play();
+      document.getElementById('popup-message').innerText = `🎉 Happy Birthday ${name}! 🎂`;
+      document.getElementById('popup').classList.remove('hidden');
+      showConfetti();
+    }
+
+    function animateKitty() {
+      let frame = 0;
+      setInterval(() => {
+        frame = (frame + 1) % 2;
+        kitty.style.backgroundImage = `url('hello_kitty${frame + 1}.png')`;
+      }, 300);
+    }
+
+    function setupKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        const step = 10;
+        if (e.key === 'ArrowLeft') {
+          kittyX -= step;
+          walkSound.play();
+        } else if (e.key === 'ArrowRight') {
+          kittyX += step;
+          walkSound.play();
+        }
+        kitty.style.left = kittyX + 'px';
+      });
+    }
+
+    function showConfetti() {
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.textContent = '🎊';
+        confetti.style.position = 'fixed';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.fontSize = '30px';
+        confetti.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`;
+        document.body.appendChild(confetti);
+      }
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes fall {
+          to {
+            transform: translateY(120vh);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
   </script>
 </body>
 </html>
